@@ -18,13 +18,21 @@ module.exports = (options) => ({
     publicPath: '/',
   }, options.output), // Merge with env dependent settings
   module: {
+    noParse: /moment\.js/,
     rules: [
       {
         test: /\.js$/, // Transform all .js files required somewhere with Babel
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: options.babelQuery,
+          options: {
+            plugins: [
+              ['import', {
+                libraryName: 'antd',
+                style: 'css',
+              }],
+            ],
+          },
         },
       },
       {
@@ -99,6 +107,9 @@ module.exports = (options) => ({
     new webpack.NamedModulesPlugin(),
   ]),
   resolve: {
+    alias: {
+      moment$: 'moment/moment.js',
+    },
     modules: ['app', 'node_modules'],
     extensions: [
       '.js',
